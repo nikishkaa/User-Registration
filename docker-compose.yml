@@ -1,0 +1,53 @@
+services:
+  app:
+    build: .
+    container_name: user_registration_app
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+    networks:
+      - app_network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/user_registration_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+
+  mysql:
+    image: mysql:8.0
+    container_name: user_registration_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: user_registration_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+    command: --default-authentication-plugin=mysql_native_password
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: user_registration_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      PMA_ABSOLUTE_URI: http://localhost:8080/
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - app_network
+
+volumes:
+  mysql_data:
+
+networks:
+  app_network:
+    driver: bridge
