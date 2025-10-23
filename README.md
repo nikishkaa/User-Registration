@@ -1,7 +1,7 @@
 # User Registration Spring Security
 
 Приложение для регистрации пользователей с Spring Security и MySQL.
-
+https://github.com/anshu20126/spring-boot-user-registration-and-Login/blob/main/src/main/resources/templates/index.html
 ## Запуск приложения
 
 ### Вариант 1: Полный Docker (рекомендуется)

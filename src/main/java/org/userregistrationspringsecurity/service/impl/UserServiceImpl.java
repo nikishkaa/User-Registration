@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
         //encrypt the password using spring security
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Role role = roleRepository.findByName("default_user");
+        Role role = roleRepository.findByName("default-user");
         if (role == null) {
             role = checkRoleExist();
         }
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     private Role checkRoleExist() {
         Role role = new Role();
-        role.setName("default_user");
+        role.setName("default-user");
         return roleRepository.save(role);
     }
 
