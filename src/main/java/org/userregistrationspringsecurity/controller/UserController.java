@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.userregistrationspringsecurity.dto.UserDto;
 import org.userregistrationspringsecurity.service.UserService;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 
@@ -75,7 +77,9 @@ public class UserController {
 
 
     @GetMapping("/users")
-    public String usersPage() {
+    public String usersPage(Model model) {
+        List<UserDto> users = userService.findAllUsers();
+        model.addAttribute("users", users);
         return "user";
     }
 }
