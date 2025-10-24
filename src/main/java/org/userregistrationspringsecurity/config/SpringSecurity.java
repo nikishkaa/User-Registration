@@ -27,12 +27,16 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/home-page").permitAll()
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/").permitAll()
-                                .requestMatchers("/users").hasRole("admin-user")
-                                .anyRequest().permitAll()
+                                authorize.requestMatchers("/register/**").permitAll()
+                                        .requestMatchers("/home-page").permitAll()
+                                        .requestMatchers("/login").permitAll()
+                                        .requestMatchers("/").permitAll()
+                                        .requestMatchers("/css/**").permitAll()
+                                        .requestMatchers("/js/**").permitAll()
+                                        .requestMatchers("/img/**").permitAll()
+                                        .requestMatchers("/users").hasRole("admin-user")
+                                        .anyRequest().authenticated()
+//                                      .anyRequest().permitAll() // Доступ ко всем неуказанным ресурсам
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")

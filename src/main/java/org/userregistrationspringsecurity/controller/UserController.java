@@ -13,6 +13,20 @@ public class UserController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "index";
+        return "login";
+    }
+
+
+
+
+
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
+
+    @GetMapping("/users")
+    public String usersPage() {
+        return "user";
     }
 }
