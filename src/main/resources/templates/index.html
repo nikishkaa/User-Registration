@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Registration and Login System</title>
+    <title>Home - Registration and Login System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
           rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
@@ -13,26 +13,107 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Registration and Login System</a>
+        <a class="navbar-brand" th:href="@{/home-page}">Registration and Login System</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+                    <a class="nav-link" th:href="@{/register}">Register</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}">Login</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">Logout</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="container">
-    <div class="row">
-        <h1 class="text-center"> Welcome to Registration and Login System </h1>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Сообщение об успешном логине -->
+            <div th:if="${param.login}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> You have successfully logged in!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Информация для неавторизованных пользователей -->
+            <div sec:authorize="!isAuthenticated()">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h1 class="card-title">Welcome to Registration and Login System</h1>
+                        <p class="card-text">Please register or login to access your account.</p>
+                        <a th:href="@{/register}" class="btn btn-primary me-2">Register</a>
+                        <a th:href="@{/login}" class="btn btn-outline-primary">Login</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация для авторизованных пользователей -->
+            <div sec:authorize="isAuthenticated()">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">Welcome back!</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>User Information:</h5>
+                                <p><strong>Username:</strong> <span sec:authentication="name"></span></p>
+                                <p><strong>Authentication:</strong> <span sec:authentication="principal.class.simpleName"></span></p>
+                                <p><strong>Authorities:</strong> <span sec:authentication="authorities"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Quick Actions:</h5>
+                                <a th:href="@{/users}" class="btn btn-info me-2" sec:authorize="hasRole('admin-user')">View Users</a>
+                                <a th:href="@{/logout}" class="btn btn-danger">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Дополнительная информация -->
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5>Account Details:</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-user fa-3x text-primary mb-2"></i>
+                                    <h6>Profile</h6>
+                                    <p class="text-muted">Manage your profile</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-cog fa-3x text-secondary mb-2"></i>
+                                    <h6>Settings</h6>
+                                    <p class="text-muted">Account settings</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-shield-alt fa-3x text-success mb-2"></i>
+                                    <h6>Security</h6>
+                                    <p class="text-muted">Security options</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
