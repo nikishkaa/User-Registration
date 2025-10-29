@@ -4,6 +4,13 @@
 https://github.com/anshu20126/spring-boot-user-registration-and-Login/blob/main/src/main/resources/templates/index.html
 ## Запуск приложения
 
+
+docker compose down -v
+docker-compose build --no-cache
+docker compose up
+
+
+
 ### Вариант 1: Полный Docker (рекомендуется)
 
 ```bash

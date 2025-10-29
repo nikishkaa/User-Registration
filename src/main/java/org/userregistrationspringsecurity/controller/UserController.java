@@ -1,5 +1,6 @@
 package org.userregistrationspringsecurity.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -59,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/register/save")
-    public String registerSave(@ModelAttribute("user") UserDto userDto,
+    public String registerSave(@Valid @ModelAttribute("user") UserDto userDto,
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {
