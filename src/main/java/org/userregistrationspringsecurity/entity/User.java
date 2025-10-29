@@ -18,15 +18,16 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "username", length = 128, nullable = false)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", length = 128, nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password", length = 128, nullable = false)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
