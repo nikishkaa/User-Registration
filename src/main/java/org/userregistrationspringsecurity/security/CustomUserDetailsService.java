@@ -1,5 +1,6 @@
 package org.userregistrationspringsecurity.security;
 
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,9 +28,19 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email);
 
         if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getEmail(),
+            if (!user.isEnabled()) {
+                // Явно провоцируем DisabledException, чтобы сработал failureHandler и редирект на verify-email
+                throw new DisabledException("Email is not verified");
+            }
+            return new org.springframework.security.core.userdetails.User(
+                    user.getEmail(),
                     user.getPassword(),
-                    mapRolesToAuthorities(user.getRoles()));
+                    true,                           // enabled (мы уже проверили выше)
+                    true,                           // accountNonExpired
+                    true,                           // credentialsNonExpired
+                    true,                           // accountNonLocked
+                    mapRolesToAuthorities(user.getRoles())
+            );
         } else {
             throw new UsernameNotFoundException("Invalid username or password.");
         }

@@ -3,6 +3,7 @@ package org.userregistrationspringsecurity.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -28,6 +30,7 @@ public class SpringSecurity {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) ->
                                 authorize.requestMatchers("/register/**").permitAll()
+                                        .requestMatchers("/verify-email").permitAll()
                                         .requestMatchers("/home-page").permitAll()
                                         .requestMatchers("/login").permitAll()
                                         .requestMatchers("/").permitAll()
@@ -40,8 +43,9 @@ public class SpringSecurity {
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
-                                .loginProcessingUrl("/login")
+                                .loginProcessingUrl("/perform_login")
                                 .defaultSuccessUrl("/home-page")
+                                .failureHandler(authenticationFailureHandler())
                                 .permitAll()
                 ).logout(
                         logout -> logout
@@ -50,6 +54,35 @@ public class SpringSecurity {
                                 .permitAll()
                 );
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return (request, response, exception) -> {
+            boolean isDisabled = exception instanceof DisabledException;
+
+            Throwable cause = exception.getCause();
+            while (cause != null && !isDisabled) {
+                if (cause instanceof DisabledException) {
+                    isDisabled = true;
+                    break;
+                }
+                cause = cause.getCause();
+            }
+
+            if (!isDisabled) {
+                String msg = exception.getMessage();
+                if (msg != null && msg.toLowerCase().contains("not verified")) {
+                    isDisabled = true;
+                }
+            }
+
+            if (isDisabled) {
+                response.sendRedirect("/verify-email");
+            } else {
+                response.sendRedirect("/login?error");
+            }
+        };
     }
 
     @Autowired

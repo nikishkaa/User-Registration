@@ -30,6 +30,13 @@ public class User {
     @Column(name = "password", length = 128, nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private boolean enabled;
+
+
+    private String verificationToken;
+
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",

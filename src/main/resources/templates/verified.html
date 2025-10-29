@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Verified</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>body{padding-top:40px}</style>
+    </head>
+<body>
+<div class="container">
+    <div class="row col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Account Verification</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success" th:text="${message}">Your account has been verified.</div>
+                <a class="btn btn-primary" th:href="@{/login}">Go to Login</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+
+
